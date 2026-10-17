@@ -1,0 +1,46 @@
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: root
+      ### Generate password -> openssl passwd -6 -salt "test"
+      password_hash: $6$test$rqVNhXeFVHA3yzsfap9jTZMTkLuPQpsQMF2HWUfpcXYKyP9IPgte4frtqcgvNChjljNZVI1ygiG/q8xGUKJWp0
+      ### Generate ssh key-pairs with "ssh-keygen -t rsa"
+      ### Copy from ~/.ssh/id_rsa.pub
+storage:
+  files:
+    - path: /etc/profile.d/opt-path.sh
+      contents:
+        inline: |
+          export PATH=$PATH:/var/opt/bin
+    ### Initial Node IP
+    - path: /etc/hostname
+      overwrite: true
+      mode: 0644
+      contents:
+        inline: |-
+          ###HOSTNAME###
+    ### The default interface naming is eth0
+    - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=eth0
+          type=ethernet
+          interface-name=eth0
+          [ipv4]
+          address1=###IP_ADDRESS###/###CIDR###,###IP_GATEWAY###
+          dns=###IP_GATEWAY###
+          method=manual
+          [ipv6]
+          method=auto
+    - path: /etc/hosts
+      mode: 0644
+      overwrite: true
+      contents:
+        inline: |
+          127.0.0.1 localhost localhost.localdomain
+          ::1		localhost localhost.localdomain ipv6-localhost ipv6-loopback
+
+          ###IP_ADDRESS### ###HOSTNAME### ###HOSTNAME###.local ###HOSTNAME###.gpm.my.id

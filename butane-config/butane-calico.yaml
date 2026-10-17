@@ -1,0 +1,22 @@
+variant: fcos
+version: 1.5.0
+storage:
+  files:
+    - path: /var/lib/rancher/rke2/server/manifests/rke2-calico-config.yaml
+      contents:
+        inline: |
+          ---
+          apiVersion: helm.cattle.io/v1
+          kind: HelmChartConfig
+          metadata:
+            name: rke2-calico
+            namespace: kube-system
+          spec:
+            valuesContent: |-
+              installation:
+                calicoNetwork:
+                  kubeProxyManagement: Enabled
+                  linuxDataplane: BPF
+              kubernetesServiceEndpoint:
+                host: "localhost"
+                port: "6443"
