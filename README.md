@@ -2,7 +2,10 @@
 This repository is used only for exploration purposes. Any new tricks on Kubernetes by Gerald will be published here :D
 
 ## Explored features
+- openSUSE Leap Micro 16
 - RKE2
+- Cilium CNI
+- Kube-VIP as floating IP
 - Istio Ambient Mode
 
 ## Prerequisites
