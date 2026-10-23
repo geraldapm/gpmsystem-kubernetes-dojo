@@ -85,6 +85,16 @@ spec:
       # swamp small test clusters with sync traffic. Same tuning as ceph's multisite QA.
       rgw_md_log_max_shards: "4"
       rgw_data_log_num_shards: "4"
+  healthCheck:
+    muteHealthWarning:
+      AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE:
+        policy: mute
+      AUTH_INSECURE_CLIENT_KEY_TYPE:
+        policy: mute
+      AUTH_INSECURE_KEYS_ALLOWED:
+        policy: mute
+      AUTH_INSECURE_KEYS_CREATABLE:
+        policy: mute
 ---
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
