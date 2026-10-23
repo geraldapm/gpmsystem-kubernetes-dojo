@@ -9,6 +9,7 @@ This repository is used only for exploration purposes. Any new tricks on Kuberne
 - Istio Ambient Mode
 
 ## Prerequisites
+# add description
 
 - An Installed Linux System with KVM capabilities
 - Then download the correspoding openSUSE LEAP Micro Image from This URL -> https://download.opensuse.org/distribution/leap-micro/6.2/appliances/openSUSE-Leap-Micro.x86_64-Default-qcow.qcow2 and store in in the ./images folder

@@ -1,0 +1,45 @@
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: gpmfs
+  namespace: rook-ceph # namespace:cluster
+spec:
+  # The metadata pool spec. Must use replication.
+  metadataPool:
+    replicated:
+      size: 2
+      requireSafeReplicaSize: true
+  dataPools:
+    - name: replicated
+      failureDomain: osd
+      replicated:
+        size: 2
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+---
+# create default csi subvolume group
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystemSubVolumeGroup
+metadata:
+  name: gpmfs-csi # lets keep the svg crd name same as `filesystem name + csi` for the default csi svg
+  namespace: rook-ceph # namespace:cluster
+spec:
+  # The name of the subvolume group. If not set, the default is the name of the subvolumeGroup CR.
+  name: csi
+  filesystemName: gpmfs
+  pinning:
+    distributed: 1 # distributed=<0, 1> (disabled=0)
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rook-cephfs
+provisioner: rook-ceph.cephfs.csi.ceph.com # csi-provisioner-name
+parameters:
+  clusterID: rook-ceph # namespace:cluster
+  fsName: myfs
+  pool: myfs-replicated
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+mountOptions:

@@ -1,0 +1,88 @@
+
+# Install
+# helm install rook-ceph rook/rook-ceph --version 1.21.0 --namespace rook-ceph --create-namespace
+---
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph 
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v20.2.4
+    allowUnsupported: false
+  security:
+    cephx:
+      csi:
+        keyType: aes 
+  dataDirHostPath: /var/lib/rook
+  skipUpgradeChecks: false
+  continueUpgradeAfterChecksEvenIfNotHealthy: false
+  waitTimeoutForHealthyOSDInMinutes: 10
+  upgradeOSDRequiresHealthyPGs: false
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  mgr:
+    count: 2
+    allowMultiplePerNode: false
+    modules:
+      - name: rook
+        enabled: false
+  dashboard:
+    enabled: true
+    ssl: false
+  crashCollector:
+    disable: false
+  logCollector:
+    enabled: true
+    periodicity: daily 
+    maxLogSize: 500M 
+  cleanupPolicy:
+    confirmation: ""
+    sanitizeDisks:
+      method: quick
+      dataSource: zero
+      iteration: 1
+    allowUninstallWithVolumes: false
+  removeOSDsIfOutAndSafeToRemove: false
+  priorityClassNames:
+    mon: system-node-critical
+    osd: system-node-critical
+    mgr: system-cluster-critical
+  storage: 
+    useAllNodes: false
+    useAllDevices: true
+    nodes:
+      - name: gpmrke2workerstor1
+      - name: gpmrke2workerstor2
+    # devicePathFilter: "^/dev/disk/by-label/cephstor.*"
+    allowDeviceClassUpdate: false 
+    allowOsdCrushWeightUpdate: false 
+    scheduleAlways: false
+    onlyApplyOSDPlacement: false
+  cephConfig:
+    global:
+      osd_pool_default_size: "1"
+      mon_warn_on_pool_no_redundancy: "false"
+      bdev_flock_retry: "20"
+      bluefs_buffered_io: "false"
+      mon_data_avail_warn: "10"
+      # several test OSDs share one small node; the 4Gi default overcommits its memory
+      osd_memory_target: "1073741824"
+      # multisite sync polls every log shard per interval; the defaults (64/128 shards)
+      # swamp small test clusters with sync traffic. Same tuning as ceph's multisite QA.
+      rgw_md_log_max_shards: "4"
+      rgw_data_log_num_shards: "4"
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: builtin-mgr
+  namespace: rook-ceph # namespace:cluster
+spec:
+  name: .mgr
+  failureDomain: osd
+  replicated:
+    size: 2
+    requireSafeReplicaSize: false
