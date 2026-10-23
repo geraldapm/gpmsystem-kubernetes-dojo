@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: gateway-public-options
   namespace: istio-system
+  annotations:
+    networking.istio.io/service-type: "NodePort"
 data:
   horizontalPodAutoscaler: |
     spec:

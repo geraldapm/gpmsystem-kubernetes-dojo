@@ -39,7 +39,7 @@ spec:
     allowMultiplePerNode: false
     modules:
       - name: rook
-        enabled: false
+        enabled: true
   dashboard:
     enabled: true
     ssl: false
