@@ -97,6 +97,34 @@ bash start-vm.sh
 ## Extra Notes
 - For node gpmrke2workerstor1 and gpmrke2workerstor2, create two additional 40GB Disks for Rook Ceph store nodes
 
+- Ensure that the cilium config is enabling nodeport address:
+```bash
+
+gpmrke2controlplane1:~ # cat /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml 
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-cilium
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    kubeProxyReplacement: true
+    k8sServiceHost: "localhost"
+    k8sServicePort: "6443"
+    nodePort:
+      addresses:
+        - 192.168.103.0/24
+  hubble:
+    enabled: true
+    relay:
+      enabled: true
+    ui:
+      enabled: true
+
+
+```
+
 - When installing istio ambient mode, ensure that istio-cni-node and ztunnel has the privileged access:
 ```bash
 kubectl patch daemonset istio-cni-node -n istio-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/securityContext/privileged", "value": true}]'

@@ -15,6 +15,27 @@ data:
         app: bookinfo
     spec:
       replicas: 2
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 1
+                preference:
+                  matchExpressions:
+                  - key: node-role.kubernetes.io/gateway
+                    operator: Exists
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                  - key: node-role.kubernetes.io/gateway
+                    operator: Exists
+                topologyKey: kubernetes.io/hostname
+          tolerations:
+            - effect: NoSchedule
+              key: app/istio-reserved
+              operator: Exists
 
   service: |
     spec:
