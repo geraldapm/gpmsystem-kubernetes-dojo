@@ -13,8 +13,19 @@ spec:
     allowUnsupported: false
   security:
     cephx:
+      daemon:
+        keyRotationPolicy: KeyGeneration
+        keyGeneration: 2
       csi:
+        keyRotationPolicy: KeyGeneration
+        keyGeneration: 2
+        keepPriorKeyCountMax: 1
         keyType: aes 
+      rbdMirrorPeer:
+        keyRotationPolicy: KeyGeneration
+        keyGeneration: 2
+        keyType: aes
+
   dataDirHostPath: /var/lib/rook
   skipUpgradeChecks: false
   continueUpgradeAfterChecksEvenIfNotHealthy: false

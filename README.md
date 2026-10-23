@@ -7,6 +7,7 @@ This repository is used only for exploration purposes. Any new tricks on Kuberne
 - Cilium CNI
 - Kube-VIP as floating IP
 - Istio Ambient Mode
+- Rook ceph with 2 disks each storage node (replica 2 by OSD)
 
 ## Prerequisites
 # add description
@@ -94,7 +95,7 @@ bash start-vm.sh
 ```
 
 ## Extra Notes
-- For node gpmrke2workerstor1 and gpmrke2workerstor2, create two additional 10GB Disks for Longhorn store nodes
+- For node gpmrke2workerstor1 and gpmrke2workerstor2, create two additional 40GB Disks for Rook Ceph store nodes
 
 - When installing istio ambient mode, ensure that istio-cni-node and ztunnel has the privileged access:
 ```bash
