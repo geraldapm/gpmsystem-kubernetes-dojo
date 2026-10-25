@@ -73,10 +73,10 @@ kubectl get pod,svc -n ngopi-gpmsystem-ns
 ### Accessing web:
 - Open the service URL:
 ```bash
-http://192.168.103.101:31080/quickstart
+http://<CONTROLPLANE_IP>:31080/quickstart
 ```
 
-- Open the Admin Console URL:
+- Admin Console URL String (used to connect from Weblogic Remote Console). Read the [Documentation](https://oracle.github.io/weblogic-kubernetes-operator/managing-domains/accessing-the-domain/remote-admin-console/):
 ```bash
-http://192.168.103.101:31080/console
+http://<CONTROLPLANE_IP>:31080/
 ```
