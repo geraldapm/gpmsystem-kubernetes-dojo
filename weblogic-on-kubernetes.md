@@ -20,7 +20,7 @@ helm install weblogic-operator weblogic-operator/weblogic-operator \
   --wait
 ```
 
-- Apply weblogic gateway (requires istio to be installed)
+- Apply weblogic gateway [weblogic-operator/weblogic-gateway.yaml](./weblogic-operator/weblogic-gateway.yaml) (requires istio to be installed)
 ```bash
 kubectl apply -f weblogic-operator/weblogic-gateway.yaml
 ```
@@ -58,7 +58,7 @@ kubectl -n ngopi-gpmsystem-ns create secret generic \
 
 - Then, create an auxiliary image by following this [Documentation](https://oracle.github.io/weblogic-kubernetes-operator/quickstart/summary/index.html#advanced-do-it-yourself).
 
-- Finally, apply the domain configuration:
+- Finally, apply the domain configuration on [weblogic-operator/ngopi-gpmsystem-domain.yaml](./weblogic-operator/ngopi-gpmsystem-domain.yaml):
 ```bash
 kubectl apply -f weblogic-operator/ngopi-gpmsystem-domain.yaml
 ```
