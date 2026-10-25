@@ -88,15 +88,14 @@ spec:
   - matches:
     - path:
         type: PathPrefix
-        value: /
-    backendRefs:
-    - name: ngopi-gpmsystem-admin-server
-      port: 7001
-  - matches:
-    - path:
-        type: PathPrefix
         value: /quickstart
     backendRefs:
     - name: ngopi-gpmsystem-cluster-cluster-1
       port: 8001
-
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: ngopi-gpmsystem-admin-server
+      port: 7001
