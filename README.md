@@ -8,9 +8,9 @@ This repository is used only for exploration purposes. Any new tricks on Kuberne
 - Kube-VIP as floating IP
 - Istio Ambient Mode
 - Rook ceph with 2 disks each storage node (replica 2 by OSD)
+- Weblogic on Kubernetes
 
 ## Prerequisites
-# add description
 
 - An Installed Linux System with KVM capabilities
 - Then download the correspoding openSUSE LEAP Micro Image from This URL -> https://download.opensuse.org/distribution/leap-micro/6.2/appliances/openSUSE-Leap-Micro.x86_64-Default-qcow.qcow2 and store in in the ./images folder
@@ -132,6 +132,7 @@ kubectl patch daemonset ztunnel -n istio-system --type='json' -p='[{"op": "add",
 ```
 
 ## Experiments:
+- [Rook Ceph Deployment](./rook-ceph-deployment.md)
 - [Weblogic on Kubernetes](./weblogic-on-kubernetes.md)
 
 ## Cleanup
