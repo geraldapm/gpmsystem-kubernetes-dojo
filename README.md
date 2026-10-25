@@ -131,6 +131,8 @@ kubectl patch daemonset istio-cni-node -n istio-system --type='json' -p='[{"op":
 kubectl patch daemonset ztunnel -n istio-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/securityContext/privileged", "value": true}]'
 ```
 
+## Experiments:
+- [Weblogic on Kubernetes](./weblogic-on-kubernetes.md)
 
 ## Cleanup
 
