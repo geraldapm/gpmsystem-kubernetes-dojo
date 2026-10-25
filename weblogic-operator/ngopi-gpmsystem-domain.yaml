@@ -97,6 +97,6 @@ spec:
         type: PathPrefix
         value: /quickstart
     backendRefs:
-    - name: ngopi-gpmsystem-cluster-1
+    - name: ngopi-gpmsystem-cluster-cluster-1
       port: 8001
 
