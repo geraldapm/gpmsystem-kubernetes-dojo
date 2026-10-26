@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: longhorn-dashboard-options
+  namespace: longhorn-system
+data:
+  horizontalPodAutoscaler: |
+    spec:
+      minReplicas: 1
+      maxReplicas: 2
+
+  deployment: |
+    metadata:
+      annotations:
+        app: longhorn-dashboard
+    spec:
+      replicas: 1
+
+  service: |
+    spec:
+      ports:
+      - name: http
+        port: 80
+        nodePort: 31111
+
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: longhorn-dashboard-gateway
+  namespace: longhorn-system
+  annotations:
+    networking.istio.io/service-type: NodePort
+spec:
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: longhorn-dashboard-options
+  gatewayClassName: istio
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: longhorn-dashboard
+  namespace: longhorn-system
+spec:
+  parentRefs:
+  - name: longhorn-dashboard-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: longhorn-frontend
+      port: 80

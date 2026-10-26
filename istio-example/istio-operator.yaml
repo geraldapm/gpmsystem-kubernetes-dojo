@@ -1,0 +1,13 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  meshConfig:
+    extensionProviders:
+      - name: basic-auth
+        envoyExtAuthzHttp:
+          service: basic-auth-service.istio-system.svc.cluster.local
+          port: 8080
+          includeRequestHeadersInCheck:
+            - authorization
+          headersToDownstreamOnDeny:
+            - www-authenticate
