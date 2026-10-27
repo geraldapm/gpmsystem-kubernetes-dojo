@@ -131,6 +131,13 @@ kubectl patch daemonset istio-cni-node -n istio-system --type='json' -p='[{"op":
 kubectl patch daemonset ztunnel -n istio-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/securityContext/privileged", "value": true}]'
 ```
 
+- When using longhorn, there are foundings when the selinux is not applied. fix it by SSH into each worker node and do the semodule fixings:
+```bash
+ausearch -m AVC -ts recent | audit2allow -M longhorn-csi
+semodule -i longhorn-csi.pp
+
+```
+
 ## Experiments:
 - [Rook Ceph Deployment](./rook-ceph-deployment.md)
 - [Weblogic on Kubernetes](./weblogic-on-kubernetes.md)
