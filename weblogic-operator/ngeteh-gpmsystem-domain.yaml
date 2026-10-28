@@ -1,0 +1,113 @@
+###
+#
+# kubectl create ns ngeteh-gpmsystem-ns
+# kubectl label ns ngeteh-gpmsystem-ns weblogic-operator=enabled
+# kubectl label ns ngeteh-gpmsystem-ns app=weblogic
+# #
+#
+
+---
+apiVersion: "weblogic.oracle/v1"
+kind: Cluster
+metadata:
+  name: ngeteh-gpmsystem-cluster-1
+  namespace: ngeteh-gpmsystem-ns
+  labels:
+    weblogic.domainUID: ngeteh-gpmsystem
+spec:
+  replicas: 2
+  clusterName: cluster-1
+
+---
+apiVersion: "weblogic.oracle/v9"
+kind: Domain
+metadata:
+  name: ngeteh-gpmsystem
+  namespace: ngeteh-gpmsystem-ns
+  labels:
+    weblogic.domainUID: ngeteh-gpmsystem
+spec:
+  domainHomeSourceType: PersistentVolume
+
+  domainHome: /shared/domains/ngeteh-gpmsystem
+
+  image: "container-registry.oracle.com/middleware/weblogic:14.1.2.0-generic-jdk17-ol8"
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets:
+  - name: weblogic-repo-credentials
+
+  webLogicCredentialsSecret:
+    name: ngeteh-gpmsystem-weblogic-credentials
+
+  includeServerOutInPodLog: true
+  serverStartPolicy: IfNeeded    
+
+  configuration:
+    initializeDomainOnPV:
+      domain:
+        createIfNotExists: Domain
+        domainType: WLS
+        domainCreationImages:
+          - image: "docker.io/geraldapm/ngeteh-gpmsystem-aux-image:v1"
+      persistentVolumeClaim:
+        metadata:
+          name: ngeteh-gpmsystem-weblogic-shared-pvc
+        spec:
+          storageClassName: longhorn-rwx
+          resources:
+            requests:
+              storage: 2Gi
+
+  serverPod:
+    volumes:
+      - name: weblogic-domain-storage-volume
+        persistentVolumeClaim:
+          claimName: ngeteh-gpmsystem-weblogic-shared-pvc
+    volumeMounts:
+      - name: weblogic-domain-storage-volume
+        mountPath: /shared
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "512Mi"
+    env:
+      - name: JAVA_OPTIONS
+        value: "-Dweblogic.StdoutDebugEnabled=false -Dweblogic.security.SSL.ignoreHostnameVerification=true -Dweblogic.security.TrustKeyStore=DemoTrust -Dweblogic.debug.DebugManagementServicesResource=true"
+      - name: USER_MEM_ARGS
+        value: "-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m"
+
+  clusters:
+    - name: ngeteh-gpmsystem-cluster-1
+
+  replicas: 1
+
+  restartVersion: '1'
+  introspectVersion: '1'
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ngeteh-gpmsystem
+  namespace: ngeteh-gpmsystem-ns
+  labels:
+    weblogic.domainUID: ngeteh-gpmsystem
+spec:
+  parentRefs:
+  - name: weblogic-gateway
+    namespace: weblogic-operator
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /quickstart
+    backendRefs:
+    - name: ngeteh-gpmsystem-cluster-cluster-1
+      port: 8001
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: ngeteh-gpmsystem-admin-server
+      port: 7001

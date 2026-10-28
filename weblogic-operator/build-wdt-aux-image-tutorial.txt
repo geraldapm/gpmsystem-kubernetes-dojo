@@ -1,0 +1,29 @@
+
+## Create the imagetool and wdt cache
+mkdir -p /data/weblogic/tools
+cd /data/weblogic/tools
+
+curl -m 120 -fL https://github.com/oracle/weblogic-deploy-tooling/releases/latest/download/weblogic-deploy.zip -o /data/weblogic/tools/weblogic-deploy.zip
+curl -m 120 -fL https://github.com/oracle/weblogic-image-tool/releases/latest/download/imagetool.zip -o /data/weblogic/tools/imagetool.zip
+unzip imagetool.zip 
+./imagetool/bin/imagetool.sh cache deleteEntry --key wdt_latest
+./imagetool/bin/imagetool.sh cache addInstaller   --type wdt   --version latest --path /data/weblogic/tools/weblogic-deploy.zip 
+
+
+## Download the sample application
+mkdir -p /data/weblogic/models/archive/wlsdeploy/applications/quickstart/WEB-INF
+curl -m 120 -fL https://raw.githubusercontent.com/oracle/weblogic-kubernetes-operator/main/kubernetes/samples/quick-start/model.yaml -o /data/weblogic/models/model.yaml
+curl -m 120 -fL https://raw.githubusercontent.com/oracle/weblogic-kubernetes-operator/main/kubernetes/samples/quick-start/model.properties -o /data/weblogic/models/model.properties
+curl -m 120 -fL https://raw.githubusercontent.com/oracle/weblogic-kubernetes-operator/main/kubernetes/samples/quick-start/archive/wlsdeploy/applications/quickstart/WEB-INF/web.xml -o /data/weblogic/models/archive/wlsdeploy/applications/quickstart/WEB-INF/web.xml
+
+## Test editing some parts of the app
+vi ../models/archive/wlsdeploy/applications/quickstart/index.jsp 
+
+jar cvf /data/weblogic/models/archive.zip -C /data/weblogic/models/archive/ wlsdeploy
+vi ../models/model.yaml 
+vi ../models/model.properties 
+
+## Build the AUX image and push to registry
+/data/weblogic/tools/imagetool/bin/imagetool.sh createAuxImage --tag docker.io/geraldapm/ngeteh-gpmsystem-aux-image:v1 --wdtModel /data/weblogic/models/model.yaml --wdtVariables /data/weblogic/models/model.properties --wdtArchive /data/weblogic/models/archive.zip 
+
+podman push docker.io/geraldapm/ngeteh-gpmsystem-aux-image:v1

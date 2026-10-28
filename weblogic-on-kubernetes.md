@@ -1,6 +1,6 @@
 # Experiment: Weblogic on Kubernetes
 
-### Installation
+## Installation
 - Create necessary resources (namespace and service account)
 ```bash
 kubectl create ns weblogic-operator
@@ -24,6 +24,8 @@ helm install weblogic-operator weblogic-operator/weblogic-operator \
 ```bash
 kubectl apply -f weblogic-operator/weblogic-gateway.yaml
 ```
+
+## Quick Start: Model in Image Mode
 
 ### Creating Example Weblogic Domain
 - Create namespace and labels
@@ -80,3 +82,6 @@ http://<CONTROLPLANE_IP>:31080/quickstart
 ```bash
 http://<CONTROLPLANE_IP>:31080/
 ```
+
+
+## Quick Start: Domain in PV Mode
