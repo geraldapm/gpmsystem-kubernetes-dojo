@@ -1,0 +1,31 @@
+domainInfo:
+    AdminUserName: '@@SECRET:__weblogic-credentials__:username@@'
+    AdminPassword: '@@SECRET:__weblogic-credentials__:password@@'
+    ServerStartMode: prod 
+topology:
+    Name: ngeteh-gpmsystem
+    AdminServerName: admin-server
+    Cluster:
+        cluster-1:
+            DynamicServers:
+                ServerNamePrefix: cluster-1-server
+                CalculatedListenPorts: false
+                MaximumDynamicServerCount: 5
+                ServerTemplate: server_1
+                DynamicClusterSize: 5
+    Server:
+        admin-server: {}
+    ServerTemplate:
+        server_1:
+            ListenPort: '@@PROP:ServerTemp.server_1.ListenPort@@'
+            Cluster: cluster-1
+            JTAMigratableTarget:
+                Cluster: cluster-1
+            SSL:
+                ListenPort: '@@PROP:ServerTemp.server_1.SSL.ListenPort@@'
+appDeployments:
+    Application:
+        quickstart:
+            SourcePath: wlsdeploy/applications/quickstart
+            ModuleType: war
+            Target: cluster-1
