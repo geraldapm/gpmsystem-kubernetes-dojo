@@ -20,6 +20,7 @@ butane-generated/
 
 # Any image templte disk file
 images/
+image-backup/
 
 # Any generated ignition config file
 ignition/

@@ -85,3 +85,58 @@ http://<CONTROLPLANE_IP>:31080/
 
 
 ## Quick Start: Domain in PV Mode
+
+### Creating Example Weblogic Domain
+- Create namespace and labels
+```bash
+kubectl create ns ngeteh-gpmsystem-ns
+kubectl label ns ngeteh-gpmsystem-ns weblogic-operator=enabled
+kubectl label ns ngeteh-gpmsystem-ns app=weblogic
+```
+- Add Registry Credential for pulling image
+```bash
+kubectl create secret docker-registry weblogic-repo-credentials \
+     --docker-server=container-registry.oracle.com \
+     --docker-username=YOUR_REGISTRY_USERNAME \
+     --docker-password=YOUR_REGISTRY_SSO_TOKEN \
+     --docker-email=YOUR_REGISTRY_EMAIL \
+     -n ngeteh-gpmsystem-ns
+```
+
+- Add admin secret (example). Should be minimum 8 characters with min one Uppercase, Number, and non-alphabetical character
+```bash
+kubectl create secret generic ngeteh-gpmsystem-weblogic-credentials \
+  --from-literal=username=admin --from-literal=password=Ng0picoy# \
+  -n ngeteh-gpmsystem-ns
+```
+
+- Create a domain runtime encryption secret for the domain 
+```bash
+kubectl -n ngeteh-gpmsystem-ns create secret generic \
+  ngeteh-gpmsystem-runtime-encryption-secret \
+   --from-literal=password=ngetehcoy_runtime
+```
+
+- Then, create an auxiliary image by following this [Documentation](https://oracle.github.io/weblogic-kubernetes-operator/quickstart/summary/index.html#advanced-do-it-yourself).
+
+- Finally, apply the domain configuration on [weblogic-operator/ngeteh-gpmsystem-domain.yaml](./weblogic-operator/ngeteh-gpmsystem-domain.yaml). Adjust the PV creation:
+```bash
+kubectl apply -f weblogic-operator/ngeteh-gpmsystem-domain.yaml
+```
+
+### Monitoring
+
+- Check the pod and svc
+```bash
+kubectl get pod,svc -n ngopi-gpmsystem-ns
+```
+
+### Accessing web:
+- Open the service URL:
+```bash
+http://<CONTROLPLANE_IP>:31080/quickstart
+```
+
+- Admin Console URL String (used to connect from Weblogic Remote Console). Read the [Documentation](https://oracle.github.io/weblogic-kubernetes-operator/managing-domains/accessing-the-domain/remote-admin-console/):
+```bash
+http://<CONTROLPLANE_IP>:31080/
