@@ -22,8 +22,12 @@ IGNITION_DIR=$CURRENT_DIR/ignition
 POD_CIDR=10.244.0.0/16
 SERVICE_CIDR=10.96.0.0/12
 
+# Current interface (enp1s0 or eth0)
+VM_INTERFACE=enp1s0
+
 ### Versioning used in the provisioning scripts
-RKE2_VERSION="v1.35.4+rke2r1"
+# RKE2_VERSION="v1.35.4+rke2r1"
+RKE2_VERSION="v1.37.2+rke2r1"
 
 if [[ $1 == "--generate" ]];
 then
@@ -82,6 +86,7 @@ for vm in ${vms[*]}; do
                         | sed "s+###IP_GATEWAY###+$IP_GATEWAY+g" \
                         | sed "s+/###CIDR###+/$CIDR+g" \
                         | sed "s+###HOSTNAME###+$vm+g" \
+                        | sed "s+###INTERFACE###+$VM_INTERFACE+g" \
                         | sed "s+###IP_ADDRESS###+$IP_ADDR+g" \
                         | butane)
                 - inline: |-
@@ -91,8 +96,10 @@ for vm in ${vms[*]}; do
                     $(cat $BUTANE_AUTOGEN_DIR/butane-hosts.yaml \
                         | butane)
                 - inline: |-
-                    $(cat $BUTANE_STATIC_DIR/butane-kube-vip.yaml \
+                    $(cat $BUTANE_STATIC_DIR/butane-keepalived.yaml \
+                        | sed "s+###INTERFACE###+$VM_INTERFACE+g" \
                         | sed "s+###FLOATINGIP###+$IP_FLOATING+g" \
+                        | sed "s+###KEEPALIVED_PRIORITY###+200+g" \
                         | butane)
                 - inline: |-
                     $(cat $BUTANE_STATIC_DIR/butane-rke2-installer.yaml \
@@ -127,6 +134,7 @@ EOF
                 - inline: |-
                     $(cat $BUTANE_STATIC_DIR/butane-common.yaml \
                         | sed "s+###IP_GATEWAY###+$IP_GATEWAY+g" \
+                        | sed "s+###INTERFACE###+$VM_INTERFACE+g" \
                         | sed "s+/###CIDR###+/$CIDR+g" \
                         | sed "s+###HOSTNAME###+$vm+g" \
                         | sed "s+###IP_ADDRESS###+$IP_ADDR+g" \
@@ -138,8 +146,10 @@ EOF
                     $(cat $BUTANE_AUTOGEN_DIR/butane-hosts.yaml \
                         | butane)
                 - inline: |-
-                    $(cat $BUTANE_STATIC_DIR/butane-kube-vip.yaml \
+                    $(cat $BUTANE_STATIC_DIR/butane-keepalived.yaml \
+                        | sed "s+###INTERFACE###+$VM_INTERFACE+g" \
                         | sed "s+###FLOATINGIP###+$IP_FLOATING+g" \
+                        | sed "s+###KEEPALIVED_PRIORITY###+100+g" \
                         | butane)
                 - inline: |-
                     $(cat $BUTANE_STATIC_DIR/butane-rke2-installer.yaml \
@@ -170,6 +180,7 @@ EOF
                 merge:
                 - inline: |-
                     $(cat $BUTANE_STATIC_DIR/butane-common.yaml \
+                        | sed "s+###INTERFACE###+$VM_INTERFACE+g" \
                         | sed "s+###IP_GATEWAY###+$IP_GATEWAY+g" \
                         | sed "s+/###CIDR###+/$CIDR+g" \
                         | sed "s+###HOSTNAME###+$vm+g" \

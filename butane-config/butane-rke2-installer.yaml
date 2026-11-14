@@ -18,6 +18,8 @@ storage:
           
 systemd:
   units:
+    - name: firewalld.service
+      enabled: false
     - name: install-rke2.service
       enabled: true
       contents: |

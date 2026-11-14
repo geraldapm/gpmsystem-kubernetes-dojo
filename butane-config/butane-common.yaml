@@ -20,15 +20,15 @@ storage:
       contents:
         inline: |-
           ###HOSTNAME###
-    ### The default interface naming is eth0
-    - path: /etc/NetworkManager/system-connections/eth0.nmconnection
+    ### The default interface naming is ###INTERFACE###
+    - path: /etc/NetworkManager/system-connections/###INTERFACE###.nmconnection
       mode: 0600
       contents:
         inline: |
           [connection]
-          id=eth0
+          id=###INTERFACE###
           type=ethernet
-          interface-name=eth0
+          interface-name=###INTERFACE###
           [ipv4]
           address1=###IP_ADDRESS###/###CIDR###,###IP_GATEWAY###
           dns=###IP_GATEWAY###

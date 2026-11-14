@@ -11,13 +11,14 @@ vms=($(echo "$hostlist" | awk '{print $2}'))
 CURRENT_DIR=$(pwd)
 
 IMAGE_DIR=$CURRENT_DIR/images
-TEMPLATE_DISK_FILE="$IMAGE_DIR/openSUSE-Leap-Micro.x86_64-Default-qcow.qcow2"
+# TEMPLATE_DISK_FILE="$IMAGE_DIR/openSUSE-Leap-Micro.x86_64-Default-qcow.qcow2"
+TEMPLATE_DISK_FILE="$IMAGE_DIR/Leap-16.1-Immutable.x86_64-Base-qcow.qcow2"
 IGNITION_DIR=$CURRENT_DIR/ignition
 
 ### VM Specs
 VCPU=2
 MEMORY_MB=4096
-NETWORK_IFACE=virbr3
+NETWORK_IFACE=virbr4
 
 
 for vm in ${vms[*]}; do 
