@@ -45,8 +45,8 @@ then
     --sysinfo type=fwcfg,entry0.name="opt/com.coreos/config",entry0.file="$IGNITION_DIR/$vm.ign"
 
     # give delay so that the first controlplane always boot first
-    echo "Sleeping for 3m"
-    sleep 3m
+    echo "Sleeping for 2m"
+    sleep 2m
 else
     virsh start $vm
 fi

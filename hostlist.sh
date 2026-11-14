@@ -2,7 +2,7 @@
 
 ### Define IP Subnet for CIDR assignment including floating IP and gateway IP
 
-IP_SUBNET=192.168.104.0/24
+IP_SUBNET=192.168.103.0/24
 
 ### Set IP Subnet Gateway
 IP_GATEWAY="$(echo $IP_SUBNET | cut -d. -f1-3).1"
@@ -18,9 +18,9 @@ hostlist=$(cat <<EOF
 192.168.103.103     gpmrke2controlplane3
 192.168.103.104     gpmrke2worker1
 192.168.103.105     gpmrke2worker2
-192.168.103.106     gpmrke2workergw1
-192.168.103.107     gpmrke2workergw2
-192.168.103.108     gpmrke2workerstor1
-192.168.103.109     gpmrke2workerstor2
+192.168.103.106     gpmrke2worker3
+192.168.103.107     gpmrke2worker4
+192.168.103.108     gpmrke2workergw1
+192.168.103.109     gpmrke2workergw2
 EOF
 )
