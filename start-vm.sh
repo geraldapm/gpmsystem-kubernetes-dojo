@@ -18,7 +18,7 @@ IGNITION_DIR=$CURRENT_DIR/ignition
 ### VM Specs
 VCPU=2
 MEMORY_MB=4096
-NETWORK_IFACE=virbr4
+NETWORK_IFACE=virbr3
 
 
 for vm in ${vms[*]}; do 
