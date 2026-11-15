@@ -6,7 +6,9 @@ storage:
       contents:
         inline: |
           ###CLUSTERMODE###
-          cni: ###CNIMODE###
+          cni:
+            - multus
+            - ###CNIMODE###
           token: ###RKE2_TOKEN###
           node-ip: ###IP_ADDRESS###
           advertise-address: ###IP_ADDRESS###
