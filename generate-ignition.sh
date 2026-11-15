@@ -121,6 +121,7 @@ for vm in ${vms[*]}; do
                         | butane)
                 - inline: |-
                     $(cat $BUTANE_STATIC_DIR/butane-$CNI_PROVIDER.yaml \
+                        | sed "s+###SUBNET###+$IP_SUBNET+g" \
                         | butane)
 EOF
      elif [[ "$K8S_MODE" == "controlplane"  ]]; then

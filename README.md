@@ -138,6 +138,24 @@ semodule -i longhorn-csi.pp
 
 ```
 
+- When applying basic-auth-policy in istio, ensure that the option exists
+```yaml
+kubectl edit cm -n istio-system istio
+
+#####
+    extensionProviders:
+      - name: basic-auth
+        envoyExtAuthzHttp:
+          service: basic-auth-service.istio-system.svc.cluster.local
+          port: 8080
+          includeRequestHeadersInCheck:
+            - authorization
+          headersToDownstreamOnDeny:
+            - www-authenticate
+
+kubectl rollout restart deploy -n istio-system istiod
+```
+
 ## Experiments:
 - [Rook Ceph Deployment](./rook-ceph-deployment.md)
 - [Weblogic on Kubernetes](./weblogic-on-kubernetes.md)
